@@ -44,13 +44,23 @@ public class LibraryServiceTests {
   @Test
   public void testRegisterMember() {
 
-    underTest.registerMember("Example ID 1", "Example Name 1");
+    String exampleName1 = "Example Name 1";
+    String exampleName2 = "Example Name 2";
+
+    String exampleId1 = "Example ID 1";
+    String exampleId2 = "Example ID 2";
+
+    underTest.registerMember(exampleId1, exampleName1);
 
     assertTrue(underTest.getMembers().size() == 1);
+    assertTrue(underTest.getMembers().containsKey(exampleId1));
+    assertEquals(underTest.getMembers().get(exampleId1).getName(), exampleName1);
 
-    underTest.registerMember("Example ID 2", "Example Name 2");
+    underTest.registerMember(exampleId2, exampleName2);
 
     assertTrue(underTest.getMembers().size() == 2);
+    assertTrue(underTest.getMembers().containsKey(exampleId2));
+    assertEquals(underTest.getMembers().get(exampleId2).getName(), exampleName2);
   }
 
   @Test
@@ -83,20 +93,20 @@ public class LibraryServiceTests {
     underTest.addBook("Jurassic Park", 3);
     underTest.addBook("The Hot Zone", 5);
 
-    underTest.registerMember("ID 000-000-001", "Arthur Dent");
-    underTest.registerMember("ID 000-000-002", "Zaphod Beeblebrox");
+    underTest.registerMember("000-000-001", "Arthur Dent");
+    underTest.registerMember("000-000-002", "Zaphod Beeblebrox");
 
     verify(libraryRepoMock, never()).lendBook(any());
 
-    assertTrue(underTest.lendBook("The Hot Zone", "ID 000-000-002"));
+    assertTrue(underTest.lendBook("The Hot Zone", "000-000-002"));
 
     verify(libraryRepoMock, times(1)).lendBook("The Hot Zone");
 
-    assertFalse(underTest.lendBook("The Twilight Zone", "ID 000-000-002"));
+    assertFalse(underTest.lendBook("The Twilight Zone", "000-000-002"));
 
     verify(libraryRepoMock, times(1)).lendBook("The Twilight Zone");
 
-    assertFalse(underTest.lendBook("Jurassic Park", "ID XXX-XXX-XXX"));
+    assertFalse(underTest.lendBook("Jurassic Park", "XXX-XXX-XXX"));
 
     verify(libraryRepoMock, never()).lendBook("Jurassic Park");
   }
